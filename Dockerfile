@@ -1,12 +1,5 @@
-FROM webdevops/php-nginx:8.3-alpine
+FROM webdevops/php-nginx:8.2
 
-# Set working directory
-WORKDIR /app
+ENV WEB_DOCUMENT_ROOT /app/public
 
-# Copy files
-COPY . .
-
-# Install packages
-RUN composer install --no-interaction --optimize-autoloader --no-cache
-
-RUN chown -R application:application .
+COPY ./ /app

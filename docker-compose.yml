@@ -3,7 +3,8 @@ services:
     api:
         container_name: todo-api
         image: ezraamos/todo-api:${IMAGE_TAG}
+        working_dir: /app
         ports:
-            - "8080:8080"
+            - "8080:80"
         env_file:
             - .env
