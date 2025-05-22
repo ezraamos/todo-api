@@ -31,10 +31,10 @@ jobs:
           cat <<EOF > .env
           IMAGE_TAG=${{ github.sha }}
           DB_CONNECTION=${{ secrets.DB_CONNECTION }}
-          DB_HOST=${{ secrets.DB_HOST }}
-          DB_DATABASE=${{ secrets.DB_DATABASE }}
-          DB_USERNAME=${{ secrets.DB_USERNAME }}
-          DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+          DB_HOST=${{ variables.DB_HOST }}
+          DB_DATABASE=${{ variables.DB_DATABASE }}
+          DB_USERNAME=${{ variables.DB_USERNAME }}
+          DB_PASSWORD=${{ variables.DB_PASSWORD }}
           EOF
 
       - name: Copy files to EC2
