@@ -5,6 +5,6 @@ services:
         image: ezraamos/todo-api:${IMAGE_TAG}
         working_dir: /app
         ports:
-            - "8080:80"
+            - "8000:8000"
         env_file:
             - .env
