@@ -26,15 +26,16 @@ jobs:
           push: true
           tags: ezraamos/todo-api:${{ github.sha }}
 
-      - name: Create .env file from template
+      - name: Create .env file
         run: |
-          IMAGE_TAG=${{ github.sha }} \
-          DB_CONNECTION=${{ secrets.DB_CONNECTION }} \
-          DB_HOST=${{ secrets.DB_HOST }} \
-          DB_DATABASE=${{ secrets.DB_DATABASE }} \
-          DB_USERNAME=${{ secrets.DB_USERNAME }} \
-          DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
-          envsubst < .env.template > .env
+          cat <<EOF > .env
+          IMAGE_TAG=${{ github.sha }}
+          DB_CONNECTION=${{ secrets.DB_CONNECTION }}
+          DB_HOST=${{ secrets.DB_HOST }}
+          DB_DATABASE=${{ secrets.DB_DATABASE }}
+          DB_USERNAME=${{ secrets.DB_USERNAME }}
+          DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+          EOF
 
       - name: Copy files to EC2
         uses: appleboy/scp-action@v0.1.4
@@ -42,10 +43,8 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: |
-            docker-compose.yml
-            .env
-          target: /var/www/todo/backend/"
+          source: "docker-compose.yml,.env"
+          target: /var/www/todo/backend/
 
       - name: Deploy to EC2 using SSH
         uses: appleboy/ssh-action@v1.2.2
