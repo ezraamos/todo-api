@@ -1,0 +1,9 @@
+version: "3"
+
+api:
+    container_name: todo-api
+    image: ezraamos/todo-api:${IMAGE_TAG}
+    ports:
+        - "8080:8080"
+    env_file:
+        - .env

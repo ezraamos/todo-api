@@ -1,0 +1,60 @@
+name: Deploy Todo API in Dev Environment
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  build_deploy:
+    runs-on: ubuntu-latest
+    environment: dev
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ezraamos/todo-api:${{ github.sha }}
+
+      - name: Create .env file from template
+        run: |
+          IMAGE_TAG=${{ github.sha }} \
+          DB_CONNECTION=${{ secrets.DB_CONNECTION }} \
+          DB_HOST=${{ secrets.DB_HOST }} \
+          DB_DATABASE=${{ secrets.DB_DATABASE }} \
+          DB_USERNAME=${{ secrets.DB_USERNAME }} \
+          DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
+          envsubst < .env.template > .env
+
+      - name: Copy files to EC2
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: |
+            docker-compose.yml
+            .env
+          target: /var/www/todo/backend/"
+
+      - name: Deploy to EC2 using SSH
+        uses: appleboy/ssh-action@v1.2.2
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd /var/www/todo/backend
+            docker-compose down || true
+            docker-compose up -d
+            docker image prune -a -f

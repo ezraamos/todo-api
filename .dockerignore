@@ -1,0 +1,12 @@
+.git
+docker-compose.yml
+.editorconfig
+.env.example
+.gitattributes
+**.gitignore
+phpunit.xml
+README.md
+
+# When building on active dev machine
+vendor
+node_modules
