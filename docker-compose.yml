@@ -5,6 +5,9 @@ services:
         image: ezraamos/todo-api:${IMAGE_TAG}
         working_dir: /app
         ports:
-            - "8000:8000"
+            - "8000:80"
         env_file:
             - .env
+        volumes:
+            - ./.env:/app/.env # ← Mounts secrets into container
+        restart: unless-stopped
