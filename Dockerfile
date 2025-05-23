@@ -10,5 +10,3 @@ RUN composer install --no-interaction --optimize-autoloader --no-cache
 
 # Set permissions
 RUN chown -R application:application .
-
-RUN chmod +x /app/entrypoint.sh
