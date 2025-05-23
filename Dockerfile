@@ -4,8 +4,9 @@ ENV WEB_DOCUMENT_ROOT=/app/public
 
 WORKDIR /app
 
-
-
 COPY . .
-RUN composer install --no-dev --optimize-autoloader && \
-    chown -R application:application /app
+# Install packages
+RUN composer install --no-interaction --optimize-autoloader --no-cache
+
+# Set permissions
+RUN chown -R application:application .

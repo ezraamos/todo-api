@@ -9,6 +9,3 @@ services:
             - .env
         command:
             - /app/entrypoint.sh
-        volumes:
-            - ./.env:/app/.env # ← Mounts secrets into container
-
